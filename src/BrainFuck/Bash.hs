@@ -1,4 +1,4 @@
-module BrainFuckBash (compile) where
+module BrainFuck.Bash (compile) where
 
 compile :: String -> String
 compile s = prelude ++ concatMap handleChar (removeNonBFChars s)

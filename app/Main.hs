@@ -1,6 +1,6 @@
 module Main (main) where
 
-import BrainFuckBash qualified as Bash
+import BrainFuck.Bash qualified as Bash
 import System.Environment (getArgs)
 
 main :: IO ()
