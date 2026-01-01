@@ -47,4 +47,6 @@ test-suite brainf-ck-test
     main-is:          Main.hs
     build-depends:
         base ^>=4.21.0.0,
+        tasty ^>= 1.5,
+        tasty-hunit ^>= 0.10,
         brainf-ck
