@@ -1,21 +1,18 @@
 module BrainFuck.Bash (compile) where
 
-compile :: String -> String
-compile s = prelude ++ concatMap handleChar (removeNonBFChars s)
+import BrainFuck.Parse (BrainFuckAST (..))
 
-removeNonBFChars :: String -> String
-removeNonBFChars = filter (`elem` "<>+-[],.")
+compile :: [BrainFuckAST] -> String
+compile ast = unlines (prelude ++ concatMap handleNode ast)
 
-prelude :: String
-prelude = "#!/bin/bash\nbytes=(0);\ni=0;\n"
+prelude :: [String]
+prelude = ["#!/bin/bash", "bytes=(0);", "i=0;"]
 
-handleChar :: Char -> String
-handleChar '>' = "((i++));\n"
-handleChar '<' = "((i--));\n"
-handleChar '+' = "((bytes[i] = (bytes[i] + 1) % 256));\n"
-handleChar '-' = "((bytes[i] = (bytes[i] - 1 + 256) % 256));\n"
-handleChar '.' = "printf \"\\\\$(printf '%03o' \"${bytes[i]}\")\";\n"
-handleChar ',' = "IFS= read -rn 1 -s char && printf '%d' \"'${char:-$\\n}\""
-handleChar '[' = "while ((bytes[i] != 0))\ndo\n"
-handleChar ']' = "done\n"
-handleChar _ = error "Unexpected Char"
+handleNode :: BrainFuckAST -> [String]
+handleNode (PtrIncrement n) = ["((i+=" ++ show n ++ "))"]
+handleNode (PtrDecrement n) = ["((i-=" ++ show n ++ "))"]
+handleNode (DataIncrement n) = ["((bytes[i] = (bytes[i] + " ++ show n ++ ") % 256));"]
+handleNode (DataDecrement n) = ["((bytes[i] = (bytes[i] - " ++ show n ++ " + 256) % 256));"]
+handleNode GetChar = ["read -rn 1 char && { printf -v \"bytes[$i]\" \"%d\" \"'${char}\"; }"]
+handleNode PutChar = ["printf \"\\\\$(printf '%03o' \"${bytes[i]}\")\";"]
+handleNode (Loop body) = ["while ((bytes[i] != 0))", "do"] ++ map (replicate 2 ' ' ++) (concatMap handleNode body) ++ ["done"]
