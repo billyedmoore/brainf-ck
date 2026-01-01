@@ -17,7 +17,8 @@ common warnings
 
 library
     import:           warnings
-    exposed-modules:  BrainFuckBash
+    exposed-modules:  BrainFuck.Bash
+                      BrainFuck.Parse
     -- other-modules:
     -- other-extensions:
     build-depends:    base ^>=4.21.0.0
