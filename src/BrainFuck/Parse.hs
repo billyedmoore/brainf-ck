@@ -50,5 +50,6 @@ squash (DataIncrement n1 : DataIncrement n2 : xs) = squash (DataIncrement (n1 + 
 squash (DataDecrement n1 : DataDecrement n2 : xs) = squash (DataDecrement (n1 + n2) : xs)
 squash (PtrIncrement n1 : PtrIncrement n2 : xs) = squash (PtrIncrement (n1 + n2) : xs)
 squash (PtrDecrement n1 : PtrDecrement n2 : xs) = squash (PtrDecrement (n1 + n2) : xs)
+squash (Loop body : xs) = (Loop (squash body)) : squash xs
 squash (x : xs) = x : squash xs
 squash [] = []

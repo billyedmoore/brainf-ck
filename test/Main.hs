@@ -14,7 +14,7 @@ tests =
   testGroup
     "Brainfuck.Parse Unit Tests"
     [ basicInstructions,
-      collapsingLogic,
+      squashingLogic,
       loopTests,
       sanitizationTests
     ]
@@ -35,10 +35,10 @@ basicInstructions =
         parse ".," @?= Right [PutChar, GetChar]
     ]
 
-collapsingLogic :: TestTree
-collapsingLogic =
+squashingLogic :: TestTree
+squashingLogic =
   testGroup
-    "Collapsing Logic"
+    "Squashing Logic"
     [ testCase "Collapse multiple pluses" $
         parse "+++" @?= Right [DataIncrement 3],
       testCase "Collapse multiple minuses" $
@@ -46,7 +46,11 @@ collapsingLogic =
       testCase "Collapse pointer moves" $
         parse ">>>" @?= Right [PtrIncrement 3],
       testCase "Do not collapse different tokens" $
-        parse "+>" @?= Right [DataIncrement 1, PtrIncrement 1]
+        parse "+>" @?= Right [DataIncrement 1, PtrIncrement 1],
+      testCase "Collapse inside loop" $
+        parse "[+++]" @?= Right [Loop [DataIncrement 3]],
+      testCase "Collapse inside nested loop" $
+        parse "[[+++]]" @?= Right [Loop [Loop [DataIncrement 3]]]
     ]
 
 loopTests :: TestTree
