@@ -1,6 +1,7 @@
 module Main (main) where
 
-import BrainFuck.Bash qualified as Bash
+-- import BrainFuck.Bash qualified as Bash
+import BrainFuck.Interpret qualified as Interpret
 import BrainFuck.Parse (parse)
 import System.Environment (getArgs)
 import System.Exit (die)
@@ -17,6 +18,7 @@ main = do
         Left err ->
           die $ "Parse Error: " ++ show err
         Right ast -> do
-          let result = Bash.compile ast
-          putStrLn result
+          Interpret.interpret ast
+    -- let result = Bash.compile ast
+    -- putStrLn result
     _ -> putStrLn "Usage: brainf-ck <bf-file>"
