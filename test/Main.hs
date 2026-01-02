@@ -56,7 +56,11 @@ squashingLogic =
       testCase "Collapse + and - together more -" $
         parse "----++" @?= Right [DataArithmetic (-2)],
       testCase "Collapse > and < together" $
-        parse ">>>>><<" @?= Right [PtrArithmetic 3]
+        parse ">>>>><<" @?= Right [PtrArithmetic 3],
+      testCase "Remove data arithmetic with no net effect" $
+        parse "++--" @?= Right [],
+      testCase "Remove ptr arithmetic with no net effect" $
+        parse "><><" @?= Right []
     ]
 
 loopTests :: TestTree
