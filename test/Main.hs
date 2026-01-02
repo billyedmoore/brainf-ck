@@ -24,13 +24,13 @@ basicInstructions =
   testGroup
     "Basic Instructions"
     [ testCase "Parse single DataIncrement" $
-        parse "+" @?= Right [DataIncrement 1],
+        parse "+" @?= Right [DataArithmetic 1],
       testCase "Parse single DataDecrement" $
-        parse "-" @?= Right [DataDecrement 1],
+        parse "-" @?= Right [DataArithmetic (-1)],
       testCase "Parse single PtrIncrement" $
-        parse ">" @?= Right [PtrIncrement 1],
+        parse ">" @?= Right [PtrArithmetic 1],
       testCase "Parse single PtrDecrement" $
-        parse "<" @?= Right [PtrDecrement 1],
+        parse "<" @?= Right [PtrArithmetic (-1)],
       testCase "Parse IO tokens" $
         parse ".," @?= Right [PutChar, GetChar]
     ]
@@ -40,17 +40,23 @@ squashingLogic =
   testGroup
     "Squashing Logic"
     [ testCase "Collapse multiple pluses" $
-        parse "+++" @?= Right [DataIncrement 3],
+        parse "+++" @?= Right [DataArithmetic 3],
       testCase "Collapse multiple minuses" $
-        parse "----" @?= Right [DataDecrement 4],
+        parse "----" @?= Right [DataArithmetic (-4)],
       testCase "Collapse pointer moves" $
-        parse ">>>" @?= Right [PtrIncrement 3],
+        parse ">>>" @?= Right [PtrArithmetic 3],
       testCase "Do not collapse different tokens" $
-        parse "+>" @?= Right [DataIncrement 1, PtrIncrement 1],
+        parse "+>" @?= Right [DataArithmetic 1, PtrArithmetic 1],
       testCase "Collapse inside loop" $
-        parse "[+++]" @?= Right [Loop [DataIncrement 3]],
+        parse "[+++]" @?= Right [Loop [DataArithmetic 3]],
       testCase "Collapse inside nested loop" $
-        parse "[[+++]]" @?= Right [Loop [Loop [DataIncrement 3]]]
+        parse "[[+++]]" @?= Right [Loop [Loop [DataArithmetic 3]]],
+      testCase "Collapse + and - together" $
+        parse "++-" @?= Right [DataArithmetic 1],
+      testCase "Collapse + and - together more -" $
+        parse "----++" @?= Right [DataArithmetic (-2)],
+      testCase "Collapse > and < together" $
+        parse ">>>>><<" @?= Right [PtrArithmetic 3]
     ]
 
 loopTests :: TestTree
@@ -60,18 +66,18 @@ loopTests =
     [ testCase "Empty loop" $
         parse "[]" @?= Right [Loop []],
       testCase "Simple loop body" $
-        parse "[+]" @?= Right [Loop [DataIncrement 1]],
+        parse "[+]" @?= Right [Loop [DataArithmetic 1]],
       testCase "Nested loops" $
         parse "[>[-] <]"
           @?= Right
             [ Loop
-                [ PtrIncrement 1,
-                  Loop [DataDecrement 1],
-                  PtrDecrement 1
+                [ PtrArithmetic 1,
+                  Loop [DataArithmetic (-1)],
+                  PtrArithmetic (-1)
                 ]
             ],
       testCase "Multiple loops in sequence" $
-        parse "[+][-]" @?= Right [Loop [DataIncrement 1], Loop [DataDecrement 1]],
+        parse "[+][-]" @?= Right [Loop [DataArithmetic 1], Loop [DataArithmetic (-1)]],
       testCase "Loop not closed" $
         parse "[" @?= Left UnmatchedLoopOpen,
       testCase "Loop not opened" $
@@ -87,7 +93,7 @@ sanitizationTests =
   testGroup
     "Sanitization (Comments/Whitespace)"
     [ testCase "Ignore letters and spaces" $
-        parse "+ + hello >" @?= Right [DataIncrement 2, PtrIncrement 1],
+        parse "+ + hello >" @?= Right [DataArithmetic 2, PtrArithmetic 1],
       testCase "Ignore newlines" $
-        parse "+\n+" @?= Right [DataIncrement 2]
+        parse "+\n+" @?= Right [DataArithmetic 2]
     ]

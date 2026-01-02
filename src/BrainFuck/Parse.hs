@@ -7,10 +7,8 @@ data ParseError
   deriving (Eq, Show)
 
 data BrainFuckAST
-  = DataIncrement Int
-  | DataDecrement Int
-  | PtrIncrement Int
-  | PtrDecrement Int
+  = DataArithmetic Int
+  | PtrArithmetic Int
   | GetChar
   | PutChar
   | Loop [BrainFuckAST]
@@ -23,10 +21,10 @@ removeNonBFChars :: String -> String
 removeNonBFChars = filter (`elem` "<>+-[],.")
 
 basicParse :: String -> Either ParseError [BrainFuckAST]
-basicParse ('+' : xs) = (DataIncrement 1 :) <$> basicParse xs
-basicParse ('-' : xs) = (DataDecrement 1 :) <$> basicParse xs
-basicParse ('>' : xs) = (PtrIncrement 1 :) <$> basicParse xs
-basicParse ('<' : xs) = (PtrDecrement 1 :) <$> basicParse xs
+basicParse ('+' : xs) = (DataArithmetic 1 :) <$> basicParse xs
+basicParse ('-' : xs) = (DataArithmetic (-1) :) <$> basicParse xs
+basicParse ('>' : xs) = (PtrArithmetic 1 :) <$> basicParse xs
+basicParse ('<' : xs) = (PtrArithmetic (-1) :) <$> basicParse xs
 basicParse ('.' : xs) = (PutChar :) <$> basicParse xs
 basicParse (',' : xs) = (GetChar :) <$> basicParse xs
 basicParse ('[' : xs) = do
@@ -46,10 +44,8 @@ basicParse [] = Right []
 basicParse (c : _) = Left $ UnexpectedSymbol c
 
 squash :: [BrainFuckAST] -> [BrainFuckAST]
-squash (DataIncrement n1 : DataIncrement n2 : xs) = squash (DataIncrement (n1 + n2) : xs)
-squash (DataDecrement n1 : DataDecrement n2 : xs) = squash (DataDecrement (n1 + n2) : xs)
-squash (PtrIncrement n1 : PtrIncrement n2 : xs) = squash (PtrIncrement (n1 + n2) : xs)
-squash (PtrDecrement n1 : PtrDecrement n2 : xs) = squash (PtrDecrement (n1 + n2) : xs)
-squash (Loop body : xs) = (Loop (squash body)) : squash xs
+squash (DataArithmetic n1 : DataArithmetic n2 : xs) = squash (DataArithmetic (n1 + n2) : xs)
+squash (PtrArithmetic n1 : PtrArithmetic n2 : xs) = squash (PtrArithmetic (n1 + n2) : xs)
+squash (Loop body : xs) = Loop (squash body) : squash xs
 squash (x : xs) = x : squash xs
 squash [] = []
