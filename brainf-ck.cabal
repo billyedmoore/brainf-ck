@@ -23,7 +23,7 @@ library
     -- other-modules:
     -- other-extensions:
     build-depends:    base ^>=4.21.0.0,
-                      containers >= 0.7
+                      containers >= 0.7,
     hs-source-dirs:   src
     default-language: GHC2024
 
@@ -33,8 +33,9 @@ executable brainf-ck
     -- other-modules:
     -- other-extensions:
     build-depends:
-        base ^>=4.21.0.0,
-        brainf-ck
+                     base ^>=4.21.0.0,
+                     optparse-applicative,
+                     brainf-ck
 
     hs-source-dirs:   app
     default-language: GHC2024
