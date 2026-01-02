@@ -16,14 +16,10 @@ interpret ast = do
     startingState = (0, Map.empty)
 
     interpretInternal :: [BrainFuckAST] -> MachineState -> IO MachineState
-    interpretInternal (PtrIncrement n : xs) (i, tape) = interpretInternal xs (i + n, tape)
-    interpretInternal (PtrDecrement n : xs) (i, tape) = interpretInternal xs (i - n, tape)
-    interpretInternal (DataIncrement n : xs) (i, tape) =
+    interpretInternal (PtrArithmetic n : xs) (i, tape) = interpretInternal xs (i + n, tape)
+    interpretInternal (DataArithmetic n : xs) (i, tape) =
       let wordN = fromIntegral n :: Word8
        in interpretInternal xs (i, Map.insertWith (+) i wordN tape)
-    interpretInternal (DataDecrement n : xs) (i, tape) =
-      let wordN = fromIntegral n :: Word8
-       in interpretInternal xs (i, Map.insertWith (flip (-)) i wordN tape)
     interpretInternal (GetChar : xs) (i, tape) = do
       c <- getChar
       let cAscii = fromIntegral (ord c) :: Word8
