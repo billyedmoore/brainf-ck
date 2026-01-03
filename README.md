@@ -7,15 +7,15 @@ sequential increments and decrements).
 
 ## General Usage
 
-To interpret programs simply omit the output file.
+To interpret programs simply provide a `.bf` file.
 
 ```bash
 brainf-ck your_program.bf 
 ```
 
-To transpile programs, the transpilation language will be infered
-from the file extension of the output file. Although since only bash 
-is supported that extension better be (`.sh` or `.bash`).
+To transpile programs provide an output file, the transpilation
+language will be infered from the file extension of the output
+file. Currently supported: `{"Bash":[".sh",".bash"],"C":[".c"]}`.
 
 ```bash
 brainf-ck your_program.bf -o your_program.sh
