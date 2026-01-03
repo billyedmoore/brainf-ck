@@ -2,7 +2,7 @@ module Main (main) where
 
 import BrainFuck.Bash qualified as Bash
 import BrainFuck.Interpret qualified as Interpret
-import BrainFuck.Parse (parse)
+import BrainFuck.Parse (parseAndOptimize)
 import Options.Applicative
 import System.Exit (die)
 
@@ -52,7 +52,7 @@ main = programMain =<< execParser opts
 programMain :: Options -> IO ()
 programMain (Options inputFile maybeOutputFile) = do
   content <- readFile inputFile
-  case parse content of
+  case parseAndOptimize content of
     Left err ->
       die $ "Parse Error: " ++ show err
     Right ast ->

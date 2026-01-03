@@ -1,4 +1,4 @@
-module BrainFuck.Parse (BrainFuckAST (..), ParseError (..), parse) where
+module BrainFuck.Parse (BrainFuckAST (..), ParseError (..), parse, optimize, parseAndOptimize) where
 
 data ParseError
   = UnexpectedSymbol Char
@@ -15,7 +15,13 @@ data BrainFuckAST
   deriving (Eq, Show)
 
 parse :: String -> Either ParseError [BrainFuckAST]
-parse = fmap squash . basicParse . removeNonBFChars
+parse = basicParse . removeNonBFChars
+
+optimize :: [BrainFuckAST] -> [BrainFuckAST]
+optimize = squash
+
+parseAndOptimize :: String -> Either ParseError [BrainFuckAST]
+parseAndOptimize = fmap optimize . parse
 
 removeNonBFChars :: String -> String
 removeNonBFChars = filter (`elem` "<>+-[],.")

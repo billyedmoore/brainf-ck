@@ -1,6 +1,6 @@
 module Main where
 
-import BrainFuck.Parse (BrainFuckAST (..), ParseError (..), parse)
+import BrainFuck.Parse (BrainFuckAST (..), ParseError (..), parse, parseAndOptimize)
 import Test.Tasty
 import Test.Tasty.HUnit
 
@@ -40,27 +40,27 @@ squashingLogic =
   testGroup
     "Squashing Logic"
     [ testCase "Collapse multiple pluses" $
-        parse "+++" @?= Right [DataArithmetic 3],
+        parseAndOptimize "+++" @?= Right [DataArithmetic 3],
       testCase "Collapse multiple minuses" $
-        parse "----" @?= Right [DataArithmetic (-4)],
+        parseAndOptimize "----" @?= Right [DataArithmetic (-4)],
       testCase "Collapse pointer moves" $
-        parse ">>>" @?= Right [PtrArithmetic 3],
+        parseAndOptimize ">>>" @?= Right [PtrArithmetic 3],
       testCase "Do not collapse different tokens" $
-        parse "+>" @?= Right [DataArithmetic 1, PtrArithmetic 1],
+        parseAndOptimize "+>" @?= Right [DataArithmetic 1, PtrArithmetic 1],
       testCase "Collapse inside loop" $
-        parse "[+++]" @?= Right [Loop [DataArithmetic 3]],
+        parseAndOptimize "[+++.]" @?= Right [Loop [DataArithmetic 3, PutChar]],
       testCase "Collapse inside nested loop" $
-        parse "[[+++]]" @?= Right [Loop [Loop [DataArithmetic 3]]],
+        parseAndOptimize "[[+++.]]" @?= Right [Loop [Loop [DataArithmetic 3, PutChar]]],
       testCase "Collapse + and - together" $
-        parse "++-" @?= Right [DataArithmetic 1],
+        parseAndOptimize "++-" @?= Right [DataArithmetic 1],
       testCase "Collapse + and - together more -" $
-        parse "----++" @?= Right [DataArithmetic (-2)],
+        parseAndOptimize "----++" @?= Right [DataArithmetic (-2)],
       testCase "Collapse > and < together" $
-        parse ">>>>><<" @?= Right [PtrArithmetic 3],
+        parseAndOptimize ">>>>><<" @?= Right [PtrArithmetic 3],
       testCase "Remove data arithmetic with no net effect" $
-        parse "++--" @?= Right [],
+        parseAndOptimize "++--" @?= Right [],
       testCase "Remove ptr arithmetic with no net effect" $
-        parse "><><" @?= Right []
+        parseAndOptimize "><><" @?= Right []
     ]
 
 loopTests :: TestTree
@@ -72,11 +72,11 @@ loopTests =
       testCase "Simple loop body" $
         parse "[+]" @?= Right [Loop [DataArithmetic 1]],
       testCase "Nested loops" $
-        parse "[>[-] <]"
+        parse "[>[->] <]"
           @?= Right
             [ Loop
                 [ PtrArithmetic 1,
-                  Loop [DataArithmetic (-1)],
+                  Loop [DataArithmetic (-1), PtrArithmetic (1)],
                   PtrArithmetic (-1)
                 ]
             ],
@@ -97,7 +97,7 @@ sanitizationTests =
   testGroup
     "Sanitization (Comments/Whitespace)"
     [ testCase "Ignore letters and spaces" $
-        parse "+ + hello >" @?= Right [DataArithmetic 2, PtrArithmetic 1],
+        parse "+ + hello >" @?= Right [DataArithmetic 1, DataArithmetic 1, PtrArithmetic 1],
       testCase "Ignore newlines" $
-        parse "+\n+" @?= Right [DataArithmetic 2]
+        parse "+\n+" @?= Right [DataArithmetic 1, DataArithmetic 1]
     ]
