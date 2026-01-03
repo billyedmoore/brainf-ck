@@ -1,6 +1,7 @@
 module Main (main) where
 
 import BrainFuck.Bash qualified as Bash
+import BrainFuck.C qualified as C
 import BrainFuck.Interpret qualified as Interpret
 import BrainFuck.Parse (parseAndOptimize)
 import Options.Applicative
@@ -59,5 +60,6 @@ programMain (Options inputFile maybeOutputFile) = do
       case maybeOutputFile of
         (Just outputFile) -> case takeExtension outputFile of
           s | s `elem` ["sh", "bash"] -> writeFile outputFile (Bash.compile ast)
+          s | s `elem` ["c"] -> writeFile outputFile (C.compile ast)
           _ -> die $ "Unsupported File Type: " ++ show (takeExtension outputFile)
         Nothing -> Interpret.interpret ast

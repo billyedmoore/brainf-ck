@@ -18,6 +18,7 @@ common warnings
 library
     import:           warnings
     exposed-modules:  BrainFuck.Bash
+                      BrainFuck.C
                       BrainFuck.Parse
                       BrainFuck.Interpret
     -- other-modules:
