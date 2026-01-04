@@ -1,4 +1,4 @@
-module BrainFuck.Parse (BrainFuckAST (..), ParseError (..), parse, optimize, parseAndOptimize) where
+module BrainFuck.Parse (BrainFuckAST (..), ParseError (..), parse) where
 
 data ParseError
   = UnexpectedSymbol Char
@@ -16,12 +16,6 @@ data BrainFuckAST
 
 parse :: String -> Either ParseError [BrainFuckAST]
 parse = basicParse . removeNonBFChars
-
-optimize :: [BrainFuckAST] -> [BrainFuckAST]
-optimize = squash
-
-parseAndOptimize :: String -> Either ParseError [BrainFuckAST]
-parseAndOptimize = fmap optimize . parse
 
 removeNonBFChars :: String -> String
 removeNonBFChars = filter (`elem` "<>+-[],.")
@@ -48,10 +42,3 @@ basicParse ('[' : xs) = do
 basicParse (']' : _) = Left UnmatchedLoopClose
 basicParse [] = Right []
 basicParse (c : _) = Left $ UnexpectedSymbol c
-
-squash :: [BrainFuckAST] -> [BrainFuckAST]
-squash (DataArithmetic n1 : DataArithmetic n2 : xs) = if n1 + n2 == 0 then squash xs else squash (DataArithmetic (n1 + n2) : xs)
-squash (PtrArithmetic n1 : PtrArithmetic n2 : xs) = if n1 + n2 == 0 then squash xs else squash (PtrArithmetic (n1 + n2) : xs)
-squash (Loop body : xs) = Loop (squash body) : squash xs
-squash (x : xs) = x : squash xs
-squash [] = []

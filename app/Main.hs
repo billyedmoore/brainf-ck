@@ -1,9 +1,9 @@
 module Main (main) where
 
+import BrainFuck (parseAndOptimize)
 import BrainFuck.Bash qualified as Bash
 import BrainFuck.C qualified as C
 import BrainFuck.Interpret qualified as Interpret
-import BrainFuck.Parse (parseAndOptimize)
 import BrainFuck.Whitespace qualified as WS
 import Options.Applicative
 import System.Exit (die)
