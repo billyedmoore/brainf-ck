@@ -4,6 +4,7 @@ import BrainFuck.Bash qualified as Bash
 import BrainFuck.C qualified as C
 import BrainFuck.Interpret qualified as Interpret
 import BrainFuck.Parse (parseAndOptimize)
+import BrainFuck.Whitespace qualified as WS
 import Options.Applicative
 import System.Exit (die)
 
@@ -60,6 +61,7 @@ programMain (Options inputFile maybeOutputFile) = do
       case maybeOutputFile of
         (Just outputFile) -> case takeExtension outputFile of
           s | s `elem` ["sh", "bash"] -> writeFile outputFile (Bash.compile ast)
-          s | s `elem` ["c"] -> writeFile outputFile (C.compile ast)
+          s | s == "c" -> writeFile outputFile (C.compile ast)
+          s | s == "ws" -> writeFile outputFile (WS.compile ast)
           _ -> die $ "Unsupported File Type: " ++ show (takeExtension outputFile)
         Nothing -> Interpret.interpret ast
