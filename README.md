@@ -7,7 +7,8 @@ sequential increments and decrements).
 
 ## General Usage
 
-To interpret programs simply provide a `.bf` file.
+To interpret programs simply provide the name of a file containing
+brainfuck code.
 
 ```bash
 brainf-ck your_program.bf 
@@ -15,10 +16,20 @@ brainf-ck your_program.bf
 
 To transpile programs provide an output file, the transpilation
 language will be infered from the file extension of the output
-file. Currently supported: `{"Bash":[".sh",".bash"],"C":[".c"]}`.
+file.
+
+Supported languages:
+
+| Language | Extensions |
+| -------- | ---------- |
+| bash     | `[".sh", ".bash"]` |
+| c        | `[".c"]` |
+| [whitespace](https://esolangs.org/wiki/Whitespace) | `[".ws"]` |
+
+Example:
 
 ```bash
-brainf-ck your_program.bf -o your_program.sh
+brainf-ck your_program.bf -o your_program.c
 ```
 
 ## Run Tests
