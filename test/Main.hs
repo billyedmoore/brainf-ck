@@ -1,6 +1,6 @@
 module Main where
 
-import BrainFuck.Parse (BrainFuckAST (..), ParseError (..), parse, parseAndOptimize)
+import BrainFuck (BrainFuckAST (..), ParseError (..), parse, parseAndOptimize)
 import Test.Tasty
 import Test.Tasty.HUnit
 
