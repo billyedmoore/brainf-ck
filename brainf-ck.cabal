@@ -20,11 +20,13 @@ library
     exposed-modules:  BrainFuck.Bash
                       BrainFuck.C
                       BrainFuck.Parse
+                      BrainFuck.Whitespace
                       BrainFuck.Interpret
     -- other-modules:
     -- other-extensions:
     build-depends:    base ^>=4.21.0.0,
                       containers >= 0.7,
+                      mtl  >= 2.3.1
     hs-source-dirs:   src
     default-language: GHC2024
 
