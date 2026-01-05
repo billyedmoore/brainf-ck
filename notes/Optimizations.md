@@ -27,3 +27,13 @@ cells wrap around in brainfuck `[+]` does the same thing.
 
 Performing this optimisation after squashing allows us to catch cases
 like `[+-+]` (which is equivalent to `[+]`). 
+
+## Pointless Loops
+
+Brainfuck only has one type of loop `while (tape[i] != 0){}`, this means
+at the point we exit a loop we can be sure that `tape[i] == 0`. As a result
+the body of the second in a pair of back to back loops will never execute.
+
+Similarly at the start of a brainfuck program the tape is initialised to
+zeros (so `tape[0] == 0`). Therefore we can safely remove any loop before
+the first non-loop instruction.
