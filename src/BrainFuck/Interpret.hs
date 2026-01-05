@@ -37,4 +37,5 @@ interpret ast = do
         else do
           stateAfterBody <- interpretInternal body (i, tape)
           interpretInternal (Loop body : xs) stateAfterBody
+    interpretInternal (ClearCell : xs) (i, tape) = interpretInternal xs (i, Map.delete i tape)
     interpretInternal [] state = return state

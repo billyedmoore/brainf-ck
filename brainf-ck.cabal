@@ -49,7 +49,9 @@ executable brainf-ck
 test-suite brainf-ck-test
     import:           warnings
     default-language: GHC2024
-    -- other-modules:
+    other-modules:
+        TestParse
+        TestOptimise
     -- other-extensions:
     type:             exitcode-stdio-1.0
     hs-source-dirs:   test
