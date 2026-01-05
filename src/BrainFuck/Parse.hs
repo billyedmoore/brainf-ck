@@ -12,6 +12,7 @@ data BrainFuckAST
   | GetChar
   | PutChar
   | Loop [BrainFuckAST]
+  | ClearCell
   deriving (Eq, Show)
 
 parse :: String -> Either ParseError [BrainFuckAST]
