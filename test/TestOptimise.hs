@@ -9,7 +9,8 @@ optimiseTests =
   testGroup
     "Brainfuck.Optimise Unit Tests"
     [ squashingLogic,
-      clearCellLogic
+      clearCellLogic,
+      pointlessLoopLogic
     ]
 
 squashingLogic :: TestTree
@@ -25,9 +26,9 @@ squashingLogic =
       testCase "Do not collapse different tokens" $
         parseAndOptimize "+>" @?= Right [DataArithmetic 1, PtrArithmetic 1],
       testCase "Collapse inside loop" $
-        parseAndOptimize "[+++.]" @?= Right [Loop [DataArithmetic 3, PutChar]],
+        parseAndOptimize "+[+++.]" @?= Right [DataArithmetic 1, Loop [DataArithmetic 3, PutChar]],
       testCase "Collapse inside nested loop" $
-        parseAndOptimize "[[+++.]]" @?= Right [Loop [Loop [DataArithmetic 3, PutChar]]],
+        parseAndOptimize "+[[+++.]]" @?= Right [DataArithmetic 1, Loop [Loop [DataArithmetic 3, PutChar]]],
       testCase "Collapse + and - together" $
         parseAndOptimize "++-" @?= Right [DataArithmetic 1],
       testCase "Collapse + and - together more -" $
@@ -53,5 +54,21 @@ clearCellLogic =
       testCase "Clear then modify (should remain ClearCell + Arith)" $
         parseAndOptimize "+[-]+++" @?= Right [DataArithmetic 1, ClearCell, DataArithmetic 3],
       testCase "Non-optimizable loop (contains pointer moves)" $
-        parseAndOptimize "-[>+<]" @?= Right [DataArithmetic (-1), Loop [PtrArithmetic (1), DataArithmetic 1, PtrArithmetic (-1)]]
+        parseAndOptimize "-[>+<]"
+          @?= Right [DataArithmetic (-1), Loop [PtrArithmetic 1, DataArithmetic 1, PtrArithmetic (-1)]]
+    ]
+
+pointlessLoopLogic :: TestTree
+pointlessLoopLogic =
+  testGroup
+    "Pointless Loop Logic"
+    [ testCase "Remove opening clear loop" $
+        parseAndOptimize "[-]++" @?= Right [DataArithmetic 2],
+      testCase "Remove opening loop" $
+        parseAndOptimize "[+>]+++" @?= Right [DataArithmetic 3],
+      testCase "Remove back to back loop" $
+        parseAndOptimize "+[>][<]" @?= Right [DataArithmetic 1, Loop [PtrArithmetic 1]],
+      testCase "Remove back to back loops in loop" $
+        parseAndOptimize "+[++[+<][>]]"
+          @?= Right [DataArithmetic 1, Loop [DataArithmetic 2, Loop [DataArithmetic 1, PtrArithmetic (-1)]]]
     ]
