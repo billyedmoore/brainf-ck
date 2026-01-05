@@ -1,7 +1,7 @@
-module BrainFuck (BrainFuckAST (..), ParseError (..), parse, parseAndOptimize) where
+module BrainFuck (BrainFuckAST (..), ParseError (..), parse, parseAndOptimise) where
 
-import BrainFuck.Optimize (optimize)
+import BrainFuck.Optimise (optimise)
 import BrainFuck.Parse (BrainFuckAST (..), ParseError (..), parse)
 
-parseAndOptimize :: String -> Either ParseError [BrainFuckAST]
-parseAndOptimize = fmap optimize . parse
+parseAndOptimise :: String -> Either ParseError [BrainFuckAST]
+parseAndOptimise = fmap optimise . parse

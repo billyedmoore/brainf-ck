@@ -1,9 +1,9 @@
-module BrainFuck.Optimize (optimize) where
+module BrainFuck.Optimise (optimise) where
 
 import BrainFuck.Parse (BrainFuckAST (..))
 
-optimize :: [BrainFuckAST] -> [BrainFuckAST]
-optimize = clearingLoops . banishPointlessLoops . squash
+optimise :: [BrainFuckAST] -> [BrainFuckAST]
+optimise = clearingLoops . banishPointlessLoops . squash
 
 squash :: [BrainFuckAST] -> [BrainFuckAST]
 squash (DataArithmetic n1 : DataArithmetic n2 : xs) = if n1 + n2 == 0 then squash xs else squash (DataArithmetic (n1 + n2) : xs)
@@ -26,5 +26,5 @@ banishPointlessLoops xs = banishBackToBackLoops xs
 banishBackToBackLoops :: [BrainFuckAST] -> [BrainFuckAST]
 banishBackToBackLoops (Loop body : Loop _ : xs) = banishBackToBackLoops (Loop (banishBackToBackLoops body) : xs)
 banishBackToBackLoops (Loop body : xs) = Loop (banishBackToBackLoops body) : xs
-banishBackToBackLoops (x:xs) = x : banishBackToBackLoops xs
+banishBackToBackLoops (x : xs) = x : banishBackToBackLoops xs
 banishBackToBackLoops [] = []

@@ -24,7 +24,7 @@ library
                       BrainFuck.Whitespace
                       BrainFuck.Interpret
     other-modules:
-                      BrainFuck.Optimize
+                      BrainFuck.Optimise
                       BrainFuck.Parse
     -- other-extensions:
     build-depends:    base ^>=4.21.0.0,

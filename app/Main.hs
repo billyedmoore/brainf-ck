@@ -1,6 +1,6 @@
 module Main (main) where
 
-import BrainFuck (parseAndOptimize)
+import BrainFuck (parseAndOptimise)
 import BrainFuck.Bash qualified as Bash
 import BrainFuck.C qualified as C
 import BrainFuck.Interpret qualified as Interpret
@@ -54,7 +54,7 @@ main = programMain =<< execParser opts
 programMain :: Options -> IO ()
 programMain (Options inputFile maybeOutputFile) = do
   content <- readFile inputFile
-  case parseAndOptimize content of
+  case parseAndOptimise content of
     Left err ->
       die $ "Parse Error: " ++ show err
     Right ast ->
