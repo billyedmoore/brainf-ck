@@ -37,3 +37,11 @@ the body of the second in a pair of back to back loops will never execute.
 Similarly at the start of a brainfuck program the tape is initialised to
 zeros (so `tape[0] == 0`). Therefore we can safely remove any loop before
 the first non-loop instruction.
+
+## Not (or Not Yet) Implemented Strategies
+
++ Redundant code elimination for example DataArithmetic before ClearCell is clearly
+  redundant.
++ Multiply loops and other common loop patterns (such as moves).
++ Operation offsets for non-loop instructions.
++ Upper bound checking to set tape length (for implementations with limited tape length).
