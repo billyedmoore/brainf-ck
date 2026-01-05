@@ -2,8 +2,9 @@
 
 Program to interpret and transpile code from the esoteric
 language [BrainFuck](https://en.wikipedia.org/wiki/Brainfuck)
-performing minor optimisation along the way (grouping
-sequential increments and decrements).
+performing optimisation along the way.
+
+Read about the optimizations [here](/notes/Optimizations.md).
 
 ## General Usage
 
