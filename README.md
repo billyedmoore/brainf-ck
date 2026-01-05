@@ -4,7 +4,7 @@ Program to interpret and transpile code from the esoteric
 language [BrainFuck](https://en.wikipedia.org/wiki/Brainfuck)
 performing optimisation along the way.
 
-Read about the optimizations [here](/notes/Optimizations.md).
+Read about the optimisations [here](/notes/Optimisations.md).
 
 ## General Usage
 
