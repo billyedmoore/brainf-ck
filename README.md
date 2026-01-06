@@ -25,6 +25,7 @@ Supported languages:
 | -------- | ---------- |
 | bash     | `[".sh", ".bash"]` |
 | c        | `[".c"]` |
+| LLVM ir | `[".ll"]` |
 | [whitespace](https://esolangs.org/wiki/Whitespace) | `[".ws"]` |
 
 Example:

@@ -21,6 +21,7 @@ library
                       BrainFuck
                       BrainFuck.Bash
                       BrainFuck.C
+                      BrainFuck.LLVM
                       BrainFuck.Whitespace
                       BrainFuck.Interpret
     other-modules:
