@@ -3,6 +3,7 @@ module Main (main) where
 import BrainFuck (parseAndOptimise)
 import BrainFuck.Bash qualified as Bash
 import BrainFuck.C qualified as C
+import BrainFuck.Haskell qualified as Haskell
 import BrainFuck.Interpret qualified as Interpret
 import BrainFuck.LLVM qualified as LLVM
 import BrainFuck.Whitespace qualified as WS
@@ -65,5 +66,6 @@ programMain (Options inputFile maybeOutputFile) = do
           s | s == "c" -> writeFile outputFile (C.compile ast)
           s | s == "ws" -> writeFile outputFile (WS.compile ast)
           s | s == "ll" -> writeFile outputFile (LLVM.compile ast)
+          s | s == "hs" -> writeFile outputFile (Haskell.compile ast)
           _ -> die $ "Unsupported File Type: " ++ show (takeExtension outputFile)
         Nothing -> Interpret.interpret ast

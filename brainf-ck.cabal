@@ -21,6 +21,7 @@ library
                       BrainFuck
                       BrainFuck.Bash
                       BrainFuck.C
+                      BrainFuck.Haskell
                       BrainFuck.LLVM
                       BrainFuck.Whitespace
                       BrainFuck.Interpret
