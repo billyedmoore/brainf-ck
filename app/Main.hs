@@ -6,6 +6,7 @@ import BrainFuck.C qualified as C
 import BrainFuck.Haskell qualified as Haskell
 import BrainFuck.Interpret qualified as Interpret
 import BrainFuck.LLVM qualified as LLVM
+import BrainFuck.Pascal qualified as Pascal
 import BrainFuck.Whitespace qualified as WS
 import Options.Applicative
 import System.Exit (die)
@@ -67,5 +68,6 @@ programMain (Options inputFile maybeOutputFile) = do
           s | s == "ws" -> writeFile outputFile (WS.compile ast)
           s | s == "ll" -> writeFile outputFile (LLVM.compile ast)
           s | s == "hs" -> writeFile outputFile (Haskell.compile ast)
+          s | s == "pas" -> writeFile outputFile (Pascal.compile ast)
           _ -> die $ "Unsupported File Type: " ++ show (takeExtension outputFile)
         Nothing -> Interpret.interpret ast
