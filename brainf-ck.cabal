@@ -26,6 +26,7 @@ library
                       BrainFuck.LLVM
                       BrainFuck.Whitespace
                       BrainFuck.Interpret
+                      BrainFuck.X86_64Assembly
     other-modules:
                       BrainFuck.Optimise
                       BrainFuck.Parse
