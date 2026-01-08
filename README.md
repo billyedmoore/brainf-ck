@@ -24,6 +24,7 @@ Supported languages:
 | Language | Extensions |
 | -------- | ---------- |
 | bash     | `[".sh", ".bash"]` |
+| x86-64 assembly (tested with `nasm`) | `[".asm"]` |
 | c        | `[".c"]` |
 | Haskell  | `[".hs"]` |
 | Pascal   | `[".pas"]` |
