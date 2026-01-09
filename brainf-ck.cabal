@@ -27,6 +27,7 @@ library
                       BrainFuck.Whitespace
                       BrainFuck.Interpret
                       BrainFuck.X86_64Assembly
+                      BrainFuck.X86_64MachineCode
     other-modules:
                       BrainFuck.Optimise
                       BrainFuck.Parse
@@ -45,6 +46,7 @@ executable brainf-ck
     build-depends:
                      base ^>=4.21.0.0,
                      optparse-applicative,
+                     bytestring,
                      brainf-ck
 
     hs-source-dirs:   app

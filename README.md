@@ -15,7 +15,7 @@ brainfuck code.
 brainf-ck your_program.bf 
 ```
 
-To transpile programs provide an output file, the transpilation
+To transpile/compile programs provide an output file, the transpilation
 language will be infered from the file extension of the output
 file.
 
@@ -23,8 +23,9 @@ Supported languages:
 
 | Language | Extensions |
 | -------- | ---------- |
+| x86-64 executable (linux) | `[".out"]` |
+| x86-64 assembly (linux) | `[".asm"]` |
 | bash     | `[".sh", ".bash"]` |
-| x86-64 assembly (tested with `nasm`) | `[".asm"]` |
 | c        | `[".c"]` |
 | Haskell  | `[".hs"]` |
 | Pascal   | `[".pas"]` |

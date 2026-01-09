@@ -9,6 +9,9 @@ import BrainFuck.LLVM qualified as LLVM
 import BrainFuck.Pascal qualified as Pascal
 import BrainFuck.Whitespace qualified as WS
 import BrainFuck.X86_64Assembly qualified as X86_64Asm
+import BrainFuck.X86_64MachineCode qualified as X86_64MC
+import Data.ByteString qualified as BS
+import Data.Word (Word8)
 import Options.Applicative
 import System.Exit (die)
 
@@ -19,6 +22,9 @@ takeExtension s = takeExtensionInternal (reverse s) ""
     takeExtensionInternal ('.' : _) acc = acc
     takeExtensionInternal (x : xs) acc = takeExtensionInternal xs (x : acc)
     takeExtensionInternal [] _ = ""
+
+writeBytes :: FilePath -> [Word8] -> IO ()
+writeBytes path bytes = BS.writeFile path (BS.pack bytes)
 
 data Options = Options
   { _inputFile :: String,
@@ -71,5 +77,6 @@ programMain (Options inputFile maybeOutputFile) = do
           s | s == "hs" -> writeFile outputFile (Haskell.compile ast)
           s | s == "pas" -> writeFile outputFile (Pascal.compile ast)
           s | s == "asm" -> writeFile outputFile (X86_64Asm.compile ast)
+          s | s == "out" -> writeBytes outputFile (X86_64MC.compile ast)
           _ -> die $ "Unsupported File Type: " ++ show (takeExtension outputFile)
         Nothing -> Interpret.interpret ast
