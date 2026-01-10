@@ -10,6 +10,7 @@ optimiseTests =
     "Brainfuck.Optimise Unit Tests"
     [ squashingLogic,
       clearCellLogic,
+      dataArithmeticToSetCellLogic,
       pointlessLoopLogic
     ]
 
@@ -41,18 +42,64 @@ squashingLogic =
         parseAndOptimise "><><" @?= Right []
     ]
 
+dataArithmeticToSetCellLogic :: TestTree
+dataArithmeticToSetCellLogic =
+  testGroup
+    "Data Arithmetic To Set Cell Logic"
+    [ testCase "Arithmetic after clear cell" $
+        parseAndOptimise "+[-]+++" @?= Right [DataArithmetic 1, SetCell 3],
+      testCase "Arithmetic after clear cell in loop" $
+        parseAndOptimise "+++[>[-]++<-]"
+          @?= Right [DataArithmetic 3, Loop [PtrArithmetic 1, SetCell 2, PtrArithmetic (-1), DataArithmetic (-1)]],
+      testCase "Arithmetic after standard loop" $
+        parseAndOptimise "++[>--<+]+++"
+          @?= Right
+            [ DataArithmetic 2,
+              Loop [PtrArithmetic 1, DataArithmetic (-2), PtrArithmetic (-1), DataArithmetic 1],
+              SetCell 3
+            ],
+      testCase
+        "Arithmetic after clear inside a loop"
+        $
+        -- Inside, [-]+++ becomes SetCell 3.
+        parseAndOptimise "+[[-]+++]"
+          @?= Right [DataArithmetic 1, Loop [SetCell 3]],
+      testCase "Multiple resets in a row" $
+        -- The second reset [-] makes the first +++++ redundant.
+        parseAndOptimise "+[-]+++++[-]++"
+          @?= Right [DataArithmetic 1, SetCell 2],
+      testCase "Multiple resets in a row inside loop" $
+        parseAndOptimise "+[[-]+++[-]--]"
+          @?= Right
+            [DataArithmetic 1, Loop [SetCell 254]],
+      testCase
+        "SetCell with negative net arithmetic"
+        $
+        -- [-] followed by 5 '-' results in -5 (or 251 in 8-bit).
+        parseAndOptimise "+[-]-----"
+          @?= Right [DataArithmetic 1, SetCell 251],
+      testCase "SetCell after pointer movement" $
+        -- Checks that the optimization applies correctly to the new cell.
+        parseAndOptimise "+>[-]++++"
+          @?= Right [DataArithmetic 1, PtrArithmetic 1, SetCell 4],
+      testCase "Arithmetic cancels out after clear" $
+        -- Logic: 0 + 3 - 3 = 0. Should still be a SetCell.
+        parseAndOptimise "+[-]+++---"
+          @?= Right [DataArithmetic 1, SetCell 0]
+    ]
+
 clearCellLogic :: TestTree
 clearCellLogic =
   testGroup
     "Clear Cell Logic"
     [ testCase "Basic clear cell logic" $
-        parseAndOptimise "+[-]" @?= Right [DataArithmetic 1, ClearCell],
+        parseAndOptimise "+[-]" @?= Right [DataArithmetic 1, SetCell 0],
       testCase "ClearCell with squashing (net zero/positive)" $
-        parseAndOptimise "-[++-]" @?= Right [DataArithmetic (-1), ClearCell],
+        parseAndOptimise "-[++-]" @?= Right [DataArithmetic (-1), SetCell 0],
       testCase "ClearCell in nested loop" $
-        parseAndOptimise "+[++[-]]" @?= Right [DataArithmetic 1, Loop [DataArithmetic 2, ClearCell]],
-      testCase "Clear then modify (should remain ClearCell + Arith)" $
-        parseAndOptimise "+[-]+++" @?= Right [DataArithmetic 1, ClearCell, DataArithmetic 3],
+        parseAndOptimise "+[++[-]]" @?= Right [DataArithmetic 1, Loop [DataArithmetic 2, SetCell 0]],
+      testCase "Clear then modify (should become SetCell 3)" $
+        parseAndOptimise "+[-]+++" @?= Right [DataArithmetic 1, SetCell 3],
       testCase "Non-optimizable loop (contains pointer moves)" $
         parseAndOptimise "-[>+<]"
           @?= Right [DataArithmetic (-1), Loop [PtrArithmetic 1, DataArithmetic 1, PtrArithmetic (-1)]]

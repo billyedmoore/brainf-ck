@@ -71,7 +71,7 @@ handleNode (DataArithmetic n) =
   return [stackDuplicateCmd, stackDuplicateCmd, heapRetrieveCmd, stackPushCmd n, addCmd, heapStoreCmd]
 handleNode GetChar = return [stackDuplicateCmd, readCharCmd]
 handleNode PutChar = return [stackDuplicateCmd, heapRetrieveCmd, writeCharCmd]
-handleNode ClearCell = return [stackDuplicateCmd, stackPushCmd 0, heapStoreCmd]
+handleNode (SetCell n) = return [stackDuplicateCmd, stackPushCmd (fromIntegral n), heapStoreCmd]
 handleNode (Loop body) = do
   loopId <- get
   modify (+ 1)

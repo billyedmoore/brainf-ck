@@ -59,10 +59,10 @@ handleNode PutChar =
       "mov rdx, 1",
       "syscall"
     ]
-handleNode ClearCell =
+handleNode (SetCell n) =
   return
     [ "mov rax, [rsp]",
-      "mov byte [rsp+rax], 0"
+      "mov byte [rsp+rax], " ++ show n
     ]
 handleNode (Loop body) = do
   loopI <- get

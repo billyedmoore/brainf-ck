@@ -5,6 +5,7 @@ shamelessly stolen, some invaluable victims were:
 
 + [brainfuck optimization strategies](http://calmerthanyouare.org/2015/01/07/optimizing-brainfuck.html)
 + [An Optimising BF Compiler](https://www.wilfred.me.uk/blog/2015/08/29/an-optimising-bf-compiler/)
++ [Optimizing brainfuck compiler](https://www.nayuki.io/page/optimizing-brainfuck-compiler)
 
 I will use C code for examples but all the transpilers in this project *should*
 make use of these optimisations.
@@ -37,6 +38,14 @@ the body of the second in a pair of back to back loops will never execute.
 Similarly at the start of a brainfuck program the tape is initialised to
 zeros (so `tape[0] == 0`). Therefore we can safely remove any loop before
 the first non-loop instruction.
+
+## DataArithmetic On Zeroed Cells
+
+After certain operations (loops/clear cells) the tape cell currently pointed
+at must be zero, this means rather than `tape[i]+=n` we can do `tape[i]=n`.
+
+In the case of clear cells this means we can remove an instruction because
+`tape[i]=0;tape[i]=n;` is equivalent to `tape[i]=n;`.
 
 ## Not (or Not Yet) Implemented Strategies
 

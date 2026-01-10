@@ -36,7 +36,7 @@ handleNode (DataArithmetic n)
   | otherwise = ["inc(tape[i]," ++ show n ++ ");"]
 handleNode GetChar = ["tape[i]:=ord(readkey);"]
 handleNode PutChar = ["write(char(tape[i]));"]
-handleNode ClearCell = ["tape[i]:=0;"]
+handleNode (SetCell n) = ["tape[i]:=" ++ show n ++ ";"]
 handleNode (Loop body) =
   ["while tape[i] <> 0 do", "begin"]
     ++ map (replicate 2 ' ' ++) (concatMap handleNode body)
