@@ -100,13 +100,13 @@ handleNode PutChar = do
       "%" ++ cellVali32 ++ "  = zext i8 %" ++ cellVal ++ " to i32",
       "call i32 @putchar(i32 %" ++ cellVali32 ++ ")"
     ]
-handleNode ClearCell = do
+handleNode (SetCell n) = do
   localI <- newVariableName
   cellPtr <- newVariableName
   return
     [ loadI localI,
       getCellPtr localI cellPtr,
-      "store i8 0, i8* %" ++ cellPtr ++ ", align 1"
+      "store i8 " ++ show n ++ ", i8* %" ++ cellPtr ++ ", align 1"
     ]
 handleNode (Loop body) = do
   loopId <- newLoopLabelPrefix

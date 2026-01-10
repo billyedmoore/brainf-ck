@@ -1,5 +1,7 @@
 module BrainFuck.Parse (BrainFuckAST (..), ParseError (..), parse) where
 
+import Data.Word (Word8)
+
 data ParseError
   = UnexpectedSymbol Char
   | UnmatchedLoopOpen
@@ -7,12 +9,12 @@ data ParseError
   deriving (Eq, Show)
 
 data BrainFuckAST
-  = DataArithmetic Int
+  = SetCell Word8
+  | DataArithmetic Int
   | PtrArithmetic Int
   | GetChar
   | PutChar
   | Loop [BrainFuckAST]
-  | ClearCell
   deriving (Eq, Show)
 
 parse :: String -> Either ParseError [BrainFuckAST]

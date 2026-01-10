@@ -22,8 +22,8 @@ prelude =
     "",
     "type MachineState = (Int, Map.Map Int Word8)",
     "",
-    "clearCell :: MachineState -> IO MachineState",
-    "clearCell (i, tape) = return (i, Map.delete i tape)",
+    "setCell :: Word8 -> MachineState -> IO MachineState",
+    "setCell n (i, tape) = return (i, Map.insert i n tape)",
     "",
     "ptrArithmetic :: Int -> MachineState -> IO MachineState",
     "ptrArithmetic n (i, tape) = return (n + i, tape)",
@@ -68,5 +68,5 @@ handleNode (PtrArithmetic n) = "ptrArithmetic (" ++ show n ++ ")"
 handleNode (DataArithmetic n) = "dataArithmetic (" ++ show n ++ ")"
 handleNode GetChar = "readChar"
 handleNode PutChar = "writeChar"
-handleNode ClearCell = "clearCell"
+handleNode (SetCell n) = "setCell (" ++ show n ++ ")"
 handleNode (Loop body) = "while " ++ formatList (map handleNode body)

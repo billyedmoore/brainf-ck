@@ -76,10 +76,10 @@ handleNode (PtrArithmetic n) =
 handleNode (DataArithmetic n) =
   [0x48, 0x8B, 0x04, 0x24] -- move rax, [rsp]
     ++ [0x80, 0x04, 0x04]
-    ++ [fromIntegral n] -- add byte [rsp + rax], n
-handleNode ClearCell =
+    ++ [fromIntegral n] -- add byte [rsp+rax], n
+handleNode (SetCell n) =
   [0x48, 0x8B, 0x04, 0x24] -- mov rax, [rsp]
-    ++ [0xC6, 0x04, 0x04, 0x0] -- mov byte [rsp+rax], 0
+    ++ [0xC6, 0x04, 0x04, n] -- mov byte [rsp+rax], n
 handleNode GetChar =
   [0x4C, 0x8B, 0x14, 0x24] -- mov r10, [rsp]
     ++ [0x4A, 0x8D, 0x34, 0x14] -- lea rsi, [rsp + r10]
