@@ -47,6 +47,7 @@ executable brainf-ck
                      base ^>=4.21.0.0,
                      optparse-applicative,
                      bytestring,
+                     directory,
                      brainf-ck
 
     hs-source-dirs:   app

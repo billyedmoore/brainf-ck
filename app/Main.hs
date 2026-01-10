@@ -13,6 +13,7 @@ import BrainFuck.X86_64MachineCode qualified as X86_64MC
 import Data.ByteString qualified as BS
 import Data.Word (Word8)
 import Options.Applicative
+import System.Directory (getPermissions, setOwnerExecutable, setPermissions)
 import System.Exit (die)
 
 takeExtension :: String -> String
@@ -23,8 +24,17 @@ takeExtension s = takeExtensionInternal (reverse s) ""
     takeExtensionInternal (x : xs) acc = takeExtensionInternal xs (x : acc)
     takeExtensionInternal [] _ = ""
 
+makeExecutable :: FilePath -> IO ()
+makeExecutable path = do
+  perms <- getPermissions path
+  let newPerms = setOwnerExecutable True perms
+  setPermissions path newPerms
+
 writeBytes :: FilePath -> [Word8] -> IO ()
 writeBytes path bytes = BS.writeFile path (BS.pack bytes)
+
+bytesToExecutable :: FilePath -> [Word8] -> IO ()
+bytesToExecutable path bytes = writeBytes path bytes >> makeExecutable path
 
 data Options = Options
   { _inputFile :: String,
@@ -77,6 +87,6 @@ programMain (Options inputFile maybeOutputFile) = do
           s | s == "hs" -> writeFile outputFile (Haskell.compile ast)
           s | s == "pas" -> writeFile outputFile (Pascal.compile ast)
           s | s == "asm" -> writeFile outputFile (X86_64Asm.compile ast)
-          s | s == "out" -> writeBytes outputFile (X86_64MC.compile ast)
+          s | s == "out" -> bytesToExecutable outputFile (X86_64MC.compile ast)
           _ -> die $ "Unsupported File Type: " ++ show (takeExtension outputFile)
         Nothing -> Interpret.interpret ast
