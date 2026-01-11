@@ -47,10 +47,20 @@ at must be zero, this means rather than `tape[i]+=n` we can do `tape[i]=n`.
 In the case of clear cells this means we can remove an instruction because
 `tape[i]=0;tape[i]=n;` is equivalent to `tape[i]=n;`.
 
+## Remove Redundant Instructions Before "Clobber"s
+
+Certain Brainfuck instructions "clobber" the current cells value, i.e. they
+set its value with no regard for the previous value. Before instruction that
+clobber we can remove data arithmetic (`+` and `-`) as well as clear cells (`[-]`).
+
+For example `[-]+++[-]---,` can just be `,`.
+
+This is probably not very impactful because, one would assume, developers are not deliberately
+including these pointless instructions in there programs. Every little helps though I 
+suppose.
+
 ## Not (or Not Yet) Implemented Strategies
 
-+ Redundant code elimination for example DataArithmetic before ClearCell is clearly
-  redundant.
 + Multiply loops and other common loop patterns (such as moves).
 + Operation offsets for non-loop instructions.
 + Upper bound checking to set tape length (for implementations with limited tape length).
